@@ -138,5 +138,29 @@ print(seqs)
 
 library(pwalign)
 
+start_pos = start(reverseqhits)
+end_pos   = end(reverseqhits)
+
+seqs_nogap = DNAStringSet(gsub("-", "", as.character(seqs)))
+
+site_hits <- lapply(seqs_nogap, function(s) {
+  hits <- matchPattern(reversecompquery, s, max.mismatch = 20)
+  if (length(hits) > 0) {
+    as.character(subseq(s, start = start(hits)[1], end = end(hits)[1]))
+  } else {
+    NULL
+  }
+})
+
+site_hits_clean <- Filter(Negate(is.null), site_hits)
+
+char_vec <- unlist(site_hits_clean)
+char_vec <- char_vec[!is.na(char_vec) & nchar(char_vec) > 0]
+
+result_259 <- DNAStringSet(char_vec)
+
+result_259
+length(result_259)
+width(result_259)
 
 ```
